@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef4895afaaa4f6c8b2b3379743de46e, type: 3}
+  m_Name: SoundConfig
+  m_EditorClassIdentifier: 
+  soundModels:
+  - Name: 0
+    Clip: {fileID: 8300000, guid: 3a0c3e40eb6b98c48bdd9e17a8fd427c, type: 3}
+  - Name: 1
+    Clip: {fileID: 8300000, guid: 759f87b43e36bb34d9ce6b851c6735c9, type: 3}
+  - Name: 2
+    Clip: {fileID: 8300000, guid: ef598c6f4840e50418467f48a6072ebb, type: 3}
+  - Name: 3
+    Clip: {fileID: 8300000, guid: ee6b18e548540d241b1261cad571f59e, type: 3}
+  - Name: 4
+    Clip: {fileID: 8300000, guid: ab600e8a7eaf40b44b511975f234e6b2, type: 3}
+  - Name: 5
+    Clip: {fileID: 8300000, guid: f5e4859b3e94f2f449f9ed9325ed7c8d, type: 3}
+  - Name: 6
+    Clip: {fileID: 8300000, guid: 111007146943fbb468e9cb876ac5598c, type: 3}
+  - Name: 7
+    Clip: {fileID: 8300000, guid: 8763b887a50151444ad98f4151b0e12c, type: 3}
+  - Name: 8
+    Clip: {fileID: 8300000, guid: e1606586182972246baf82367acb5ba1, type: 3}
+  - Name: 9
+    Clip: {fileID: 8300000, guid: 8a893095d2b2ce740960ba8732604113, type: 3}

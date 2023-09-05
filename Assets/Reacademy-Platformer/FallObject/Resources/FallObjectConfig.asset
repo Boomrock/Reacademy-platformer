@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6c71e7a5a841289cf04e4677479cf7, type: 3}
+  m_Name: FallObjectConfig
+  m_EditorClassIdentifier: 
+  fallObjectModels:
+  - Type: 0
+    PointsPerObject: 1
+    Damage: 50
+    FallSpeed: 50
+    ObjectSprite: {fileID: 21300000, guid: 6a05ba137ea24134885b86121d15518a, type: 3}
+  - Type: 1
+    PointsPerObject: 1
+    Damage: 50
+    FallSpeed: 50
+    ObjectSprite: {fileID: 21300000, guid: f0c86c9071442284b8f3574e3b8475d7, type: 3}

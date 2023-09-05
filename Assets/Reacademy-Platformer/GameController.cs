@@ -19,28 +19,32 @@ public class GameController
     private ScoreCounter _scoreCounter;
     private SoundController _soundController;
     
-    public GameController(UnityEngine.Camera camera)
+    public GameController(UnityEngine.Camera camera, 
+        InputController inputController, 
+        PlayerController playerController, 
+        SoundController soundController,
+        FallObjectSpawner fallObjectSpawner, 
+        UIService uiService,
+        ScoreCounter scoreCounter
+        )
     {
-        _soundController = new SoundController();
+        _soundController = soundController;
         _camera = camera;
-        
+        _inputController = inputController;
+        _playerController = playerController;
+        _spawner = fallObjectSpawner;
+        _uiService = uiService;
+        _scoreCounter = scoreCounter;
         UIInit();
         ScoreInit();
         
-        _inputController = new InputController();
-        _playerController = new PlayerController(_inputController, 
-            _hudWindowController, 
-            _camera, 
-            _soundController);
-        _spawner = new FallObjectSpawner(_scoreCounter);
+   
 
         _playerController.PlayerHpController.OnZeroHealth += StopGame;
     }
     
     private void UIInit()
     {
-        _uiService = new UIService(_camera);
-            
         _mainMenuWindowController = new UIMainMenuController(_uiService, this);
         _gameWindowController = new UIGameWindowController(_uiService);
         _endMenuWindowController = new UIEndGameWindowController(_uiService, this);
@@ -67,16 +71,11 @@ public class GameController
         
         _playerController.Spawn();
         _spawner.StartSpawn();
-        TickableManager.TickableManager.UpdateNotify += Update;
     }
 
     public void StopGame()
     {
         _playerController.DestroyView(()=>_gameWindowController.ShowEndMenuWindow());
         _spawner.StopSpawn();
-        TickableManager.TickableManager.UpdateNotify -= Update;
     }
-
-    private void Update()
-    { }
 }

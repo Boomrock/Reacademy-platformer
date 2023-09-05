@@ -1,9 +1,10 @@
 using System;
 using FallObject;
 using UnityEngine;
+using Zenject;
 using Random = UnityEngine.Random;
 
-public class FallObjectSpawner
+public class FallObjectSpawner : ITickable
 {
     public FallObjectPool Pool => _pool;
 
@@ -19,6 +20,7 @@ public class FallObjectSpawner
     private float _spawnPeriod;
     private float _timer;
     private int _typesCount;
+    private bool _gameIsOn;
 
     public FallObjectSpawner(ScoreCounter scoreCounter)
     {
@@ -39,17 +41,26 @@ public class FallObjectSpawner
     public void StartSpawn()
     {
         _spawnPeriod = 6.5f;
-        TickableManager.TickableManager.UpdateNotify += Update;
+        _gameIsOn = true;
     }
 
     public void StopSpawn()
     {
-        TickableManager.TickableManager.UpdateNotify -= Update;
+        _gameIsOn = false;
         Pool.AllReturnToPool();
     }
-
-    private void Update()
+    private void SpawnNewObject()
     {
+        var type = Random.Range(0, _typesCount);
+        var newObject = _pool.CreateObject((FallObjectType)type);
+        _spawnPosition.x = Random.Range(_minPositionX, _maxPositionX);
+        newObject.gameObject.transform.position = _spawnPosition;
+    }
+
+    public void Tick()
+    {
+        if (!_gameIsOn) { return; }
+        
         _spawnPeriod -= Time.deltaTime;
         _timer += Time.deltaTime;
         
@@ -61,13 +72,5 @@ public class FallObjectSpawner
                 _spawnPeriod = Random.Range(_spawnPeriodMin, _spawnPeriodMax);
             }
         }
-    }
-
-    private void SpawnNewObject()
-    {
-        var type = Random.Range(0, _typesCount);
-        var newObject = _pool.CreateObject((FallObjectType)type);
-        _spawnPosition.x = Random.Range(_minPositionX, _maxPositionX);
-        newObject.gameObject.transform.position = _spawnPosition;
     }
 }

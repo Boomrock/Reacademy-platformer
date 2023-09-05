@@ -1,6 +1,6 @@
 ﻿using Bootstrap;
 using Camera;
-using TickableManager;
+
 using UnityEngine;
 
 public class ApplicationStartup : MonoBehaviour
@@ -12,14 +12,14 @@ public class ApplicationStartup : MonoBehaviour
     {
         StartBootstrap();
             
-        var gameController = new GameController(_camera);
+        var gameController = new GameController();
         gameController.InitGame();
     }
 
     private void StartBootstrap()
     {
         _bootstrap.Add(new CreateMainCameraCommand(out _camera));
-        _bootstrap.Add(new CreateTickableManagerCommand());
+
 
         _bootstrap.OnExecuteAllComandsNotify += NotifyOfCompletion;
         _bootstrap.Execute();

@@ -1,31 +1,36 @@
+using UI.UIService;
+using Zenject;
+
 namespace UI.UIWindows
 {
-    public class UIEndGameWindowController
+    public class UIEndGameWindowController : IUIController
     {
         private readonly UIService.UIService _uiService;
        
-        private UIEndGameWindow _endGameWindow;
+        public UIEndGameWindow EndGameWindow;
         private GameController _gameController;
-        public UIEndGameWindowController(UIService.UIService uiService, GameController gameController)
+        public UIEndGameWindowController(UIService.UIService uiService)
         {
             _uiService = uiService;
-            _gameController = gameController;
-            _endGameWindow = uiService.Get<UIEndGameWindow>();
-
+            EndGameWindow = uiService.Get<UIEndGameWindow>();
            
-            _endGameWindow.OnShowEvent += ShowWindow;
-            _endGameWindow.OnHideEvent += HideWindow;
+            EndGameWindow.OnShowEvent += ShowWindow;
+            EndGameWindow.OnHideEvent += HideWindow;
         }
-
-        private void ShowWindow()
+        [Inject]
+        public void Initialization(GameController gameController)
         {
-            _endGameWindow.OnReturnButtonClickEvent += ShowGameWindows;
-            _endGameWindow.OnReturnButtonClickEvent += _gameController.StartGame;
+            _gameController = gameController;
         }
-        private void HideWindow()
+        public void ShowWindow()
         {
-            _endGameWindow.OnReturnButtonClickEvent -= ShowGameWindows;
-            _endGameWindow.OnReturnButtonClickEvent -= _gameController.StartGame;
+            EndGameWindow.OnReturnButtonClickEvent += ShowGameWindows;
+            EndGameWindow.OnReturnButtonClickEvent += _gameController.StartGame;
+        }
+        public void HideWindow()
+        {
+            EndGameWindow.OnReturnButtonClickEvent -= ShowGameWindows;
+            EndGameWindow.OnReturnButtonClickEvent -= _gameController.StartGame;
         }
 
         public void ShowGameWindows()

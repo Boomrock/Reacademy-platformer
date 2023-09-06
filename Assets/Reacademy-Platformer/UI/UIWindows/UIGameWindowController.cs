@@ -1,24 +1,26 @@
 using UI.HUD;
+using UI.UIService;
 
 namespace UI.UIWindows
 {
-    public class UIGameWindowController
+    public class UIGameWindowController: IUIController
     {
-        private readonly UIService.UIService _uiService;
-        
-        private UIGameWindow _GameWindow;
+        private readonly UIGameWindow _uiGameWindow;
 
-        public UIGameWindowController(UIService.UIService uiService)
+        public UIGameWindowController(UIGameWindow uiGameWindow)
         {
-            _uiService = uiService;
-            _GameWindow = uiService.Get<UIGameWindow>();
+            _uiGameWindow = uiGameWindow;
+        }
+        
+
+        public void ShowWindow()
+        {
+            _uiGameWindow.Show();
         }
 
-        public void ShowEndMenuWindow()
+        public void HideWindow()
         {
-            _uiService.Hide<UIGameWindow>();
-            _uiService.Hide<HUDWindow>();
-            _uiService.Show<UIEndGameWindow>();
+            _uiGameWindow.Hide();
         }
     }
 }

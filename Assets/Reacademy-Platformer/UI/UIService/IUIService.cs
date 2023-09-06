@@ -5,9 +5,9 @@ namespace UI.UIService
 {
     public interface IUIService
     {
-        T Show<T>() where T : UIWindow;
-        void Hide<T>(Action onEnd = null) where T : UIWindow;
-        T Get<T>() where T : UIWindow;
+        T Show<T>() where T : IUIController;
+        void Hide<T>(Action onEnd = null) where T : IUIController;
+        T Get<T>() where T : IUIController;
 
         void InitWindows(Transform poolDeactiveContiner);
         void LoadWindows(string source);

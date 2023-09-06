@@ -4,9 +4,9 @@ namespace Sounds
     {
         private SoundPool _soundPool;
 
-        public SoundController()
+        public SoundController(SoundPool soundPool)
         {
-            _soundPool = new SoundPool();
+            _soundPool = soundPool;
         }
         
         public void Play(SoundName soundName, float volume = 1, bool loop = false)

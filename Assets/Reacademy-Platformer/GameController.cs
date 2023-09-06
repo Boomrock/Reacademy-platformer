@@ -3,6 +3,7 @@ using Sounds;
 using UI.HUD;
 using UI.UIService;
 using UI.UIWindows;
+using UnityEngine;
 
 public class GameController
 {
@@ -35,25 +36,15 @@ public class GameController
         _spawner = fallObjectSpawner;
         _uiService = uiService;
         _scoreCounter = scoreCounter;
-        UIInit();
+        _hudWindowController = _uiService.Get<HUDWindow>();
         ScoreInit();
-        
-   
-
         _playerController.PlayerHpController.OnZeroHealth += StopGame;
     }
     
-    private void UIInit()
-    {
-        _mainMenuWindowController = new UIMainMenuController(_uiService, this);
-        _gameWindowController = new UIGameWindowController(_uiService);
-        _endMenuWindowController = new UIEndGameWindowController(_uiService, this);
-        _hudWindowController = new HUDWindowController(_uiService);
-    }
+
 
     private void ScoreInit()
     {
-        _scoreCounter = new ScoreCounter(_soundController);
         _scoreCounter.ScoreChangeNotify += _hudWindowController.ChangeScore;
     }
 
@@ -70,6 +61,7 @@ public class GameController
         _soundController.Play(SoundName.BackMain, loop:true);
         
         _playerController.Spawn();
+        Debug.Log("as");
         _spawner.StartSpawn();
     }
 

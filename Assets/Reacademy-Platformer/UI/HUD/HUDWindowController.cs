@@ -1,8 +1,9 @@
+using UI.UIService;
 using UnityEngine;
 
 namespace UI.HUD
 {
-    public class HUDWindowController
+    public class HUDWindowController : IUIController
     {
         private readonly UIService.UIService _uiService;
         
@@ -53,6 +54,16 @@ namespace UI.HUD
                 currentHP += healthPoint;
             }
             return currentHP;
+        }
+
+        public void ShowWindow()
+        {
+            _hudWindowWindow.Show();
+        }
+
+        public void HideWindow()
+        {
+            _hudWindowWindow.Hide();
         }
     }
 }

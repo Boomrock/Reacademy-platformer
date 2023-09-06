@@ -11,9 +11,6 @@ public class ApplicationStartup : MonoBehaviour
     private void Start()
     {
         StartBootstrap();
-            
-        var gameController = new GameController();
-        gameController.InitGame();
     }
 
     private void StartBootstrap()

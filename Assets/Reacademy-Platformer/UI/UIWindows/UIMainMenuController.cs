@@ -1,37 +1,39 @@
-﻿namespace UI.UIWindows
+﻿using UI.UIService;
+using UnityEngine.PlayerLoop;
+using Zenject;
+
+namespace UI.UIWindows
 {
-    public class UIMainMenuController
+    public class UIMainMenuController : IUIController
     {
         private readonly UIService.UIService _uiService;
         
         private UIMainMenuWindow _mainMenuWindow;
         private GameController _gameController;
 
-        public UIMainMenuController(UIService.UIService uiService, GameController gameController)
+        public UIMainMenuController(UIMainMenuWindow mainMenuWindow)
         {
-            _uiService = uiService;
+            _mainMenuWindow = mainMenuWindow;
+        }
+        [Inject]
+        public void Initialization(GameController gameController)
+        {
             _gameController = gameController;
-            _mainMenuWindow = uiService.Get<UIMainMenuWindow>();
-            
-            _mainMenuWindow.OnShowEvent += ShowWindow;
-            _mainMenuWindow.OnHideEvent += HideWindow;
         }
 
-        private void ShowWindow()
+        public void ShowWindow()
         {
             _mainMenuWindow.OnStartButtonClickEvent += ShowGameWindow;
             _mainMenuWindow.OnStartButtonClickEvent += _gameController.StartGame;
+            _mainMenuWindow.Show();
         }
-        private void HideWindow()
+
+        public void HideWindow()
         {
+            _mainMenuWindow.Hide();
             _mainMenuWindow.OnStartButtonClickEvent -= ShowGameWindow;
             _mainMenuWindow.OnStartButtonClickEvent -= _gameController.StartGame;
 
-        }
-        private void ShowGameWindow()
-        {
-            _uiService.Hide<UIMainMenuWindow>();
-            _uiService.Show<UIGameWindow>();
         }
     }
 }

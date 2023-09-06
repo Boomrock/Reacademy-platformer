@@ -10,7 +10,7 @@ namespace UI.UIService
         private Transform _deactivatedContainer;
         
         private readonly UIRoot _uIRoot;
-        private readonly Dictionary<Type,UIWindow> _viewStorage = new Dictionary<Type,UIWindow>();
+        private readonly Dictionary<Type, IUIController> _controllersStorage = new Dictionary<Type,IUIController>();
         private readonly Dictionary<Type, GameObject> _initWindows= new Dictionary<Type, GameObject>();
 
         private const string UISource = "";
@@ -25,7 +25,7 @@ namespace UI.UIService
             InitWindows(_uIRoot.PoolContainer);
         }
 
-        public T Show<T>() where T : UIWindow
+        public T Show<T>() where T : IUIController
         {
             var window = Get<T>();
             if(window != null)
@@ -42,7 +42,7 @@ namespace UI.UIService
             return null;
         }
         
-        public T Get<T>() where T : UIWindow
+        public T Get<T>() where T : IUIController
         {
             var type = typeof(T);
             if (_initWindows.ContainsKey(type))
@@ -50,16 +50,16 @@ namespace UI.UIService
                 var view = _initWindows[type];            
                 return view.GetComponent<T>();
             }
-            return null;
+            return default;
         }
 
-        public void Hide<T>(Action onEnd = null) where T : UIWindow
+        public void Hide<T>(Action onEnd = null) where T : IUIController
         {
             var window = Get<T>();
             
             if(window!=null)
             {
-                Action changeParent = () => window.transform.SetParent(_uIRoot.PoolContainer);
+                void changeParent() => window.transform.SetParent(_uIRoot.PoolContainer);
                 window.OnHideEvent += changeParent;
                 window.Hide();
                 
@@ -67,39 +67,22 @@ namespace UI.UIService
             }
         }
 
-        public void InitWindows(Transform poolDeactiveContiner)
+        void Add<T>(T controller) where T : IUIController
         {
-            _deactivatedContainer = poolDeactiveContiner == null ? _uIRoot.PoolContainer : poolDeactiveContiner;
-            foreach (var windowKVP in _viewStorage)
-            {
-                Init(windowKVP.Key, _deactivatedContainer);
-            }
-        }
-
-        public void LoadWindows(string source)
-        {
-            var windows = Resources.LoadAll(source, typeof(UIWindow));
-
-            foreach (var window in windows)
-            {
-                var windowType = window.GetType();
-
-                _viewStorage.Add(windowType, (UIWindow)window);
-            }
-        }
-
+            _controllersStorage.Add(typeof(T), controller);
+        }  
         private void Init(Type t, Transform parent = null)
         {
-            if(_viewStorage.ContainsKey(t))
+            if(_controllersStorage.ContainsKey(t))
             {
                 GameObject view = null;
                 if(parent!=null)
                 {
-                    view = Object.Instantiate(_viewStorage[t].gameObject, parent);
+                    view = Object.Instantiate(_controllersStorage[t].gameObject, parent);
                 }
                 else
                 {
-                    view = Object.Instantiate(_viewStorage[t].gameObject);
+                    view = Object.Instantiate(_controllersStorage[t].gameObject);
                 }
 
                 var uiWindow = view.GetComponent<UIWindow>();

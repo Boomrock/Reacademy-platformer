@@ -27,7 +27,6 @@ namespace Reacademy_Platformer
             
        
             
-            Container.Bind<UIService>().AsSingle();
             
             Container.BindInterfacesAndSelfTo<InputController>()
                 .AsSingle();
@@ -36,10 +35,23 @@ namespace Reacademy_Platformer
             Container.Bind<PlayerController>()
                 .AsSingle()
                 .NonLazy();
+
+            Container.Bind<UIRoot>()
+                .FromComponentInNewPrefabResource(ResourcesConst.UIRoot)
+                .AsSingle();
+            Container.Bind<UIService>().AsSingle();
+
+            Container.Bind<UIMainMenuWindow>().FromComponentInNewPrefabResource(ResourcesConst.UIMainMenuWindow)
+                .AsSingle();
+            Container.Bind<UIGameWindow>().FromComponentInNewPrefabResource(ResourcesConst.UIGameWindow)
+                .AsSingle();
+            Container.Bind<UIEndGameWindow>().FromComponentInNewPrefabResource(ResourcesConst.UIEndGameWindow)
+                .AsSingle();
+            Container.Bind<HUDWindow>().FromComponentInNewPrefabResource(ResourcesConst.HUDWindow)
+                .AsSingle();
             
             Container.Bind<UIMainMenuController>()
-                .AsSingle()
-                .NonLazy();
+                .AsSingle();
             Container.Bind<UIGameWindowController>()
                 .AsSingle()
                 .NonLazy();
@@ -50,13 +62,9 @@ namespace Reacademy_Platformer
                 .AsSingle()
                 .NonLazy();
 
-            _gameController =  Container.Instantiate<GameController>();
-            Container.Bind<GameController>().FromInstance(_gameController).AsSingle();
+            Container.BindInterfacesAndSelfTo<GameController>()
+                .AsSingle();
         }
-
-        void Start()
-        {
-            _gameController.InitGame();
-        }
+        
     }
 }

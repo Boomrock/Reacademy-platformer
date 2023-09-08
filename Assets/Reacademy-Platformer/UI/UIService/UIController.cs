@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 namespace UI.UIService
 {
@@ -13,13 +14,15 @@ namespace UI.UIService
         public UIController(TUIWindow window, UIRoot uiRoot)
         {
             _uiRoot = uiRoot;
+            Debug.Log(uiRoot.IsPrefabDefinition());
             _window = window;
         }
 
 
         public virtual void ShowWindow()
         {
-            (_transform = _window.transform).SetParent(_uiRoot.Container, false);
+            _transform = _window.transform;
+            _transform.SetParent(_uiRoot.Container, false);
             var windowPosition = _transform.position;
             windowPosition.y *= 2;
             _transform.position = windowPosition;

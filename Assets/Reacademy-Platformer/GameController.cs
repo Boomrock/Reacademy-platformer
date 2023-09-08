@@ -4,62 +4,56 @@ using UI.HUD;
 using UI.UIService;
 using UI.UIWindows;
 using UnityEngine;
+using Zenject;
 
-public class GameController
+public class GameController : IInitializable
 {
-    private readonly UnityEngine.Camera _camera;
-    
     private FallObjectSpawner _spawner;
-    private InputController _inputController;
     private PlayerController _playerController;
     private UIService _uiService;
     private UIMainMenuController _mainMenuWindowController;
     private UIGameWindowController _gameWindowController;
     private UIEndGameWindowController _endMenuWindowController;
-    private HUDWindowController _hudWindowController;
     private ScoreCounter _scoreCounter;
     private SoundController _soundController;
-    
-    public GameController(UnityEngine.Camera camera, 
-        InputController inputController, 
-        PlayerController playerController, 
+
+    public GameController(PlayerController playerController,
         SoundController soundController,
-        FallObjectSpawner fallObjectSpawner, 
+        FallObjectSpawner fallObjectSpawner,
         UIService uiService,
         ScoreCounter scoreCounter
-        )
+    )
     {
         _soundController = soundController;
-        _camera = camera;
-        _inputController = inputController;
         _playerController = playerController;
         _spawner = fallObjectSpawner;
         _uiService = uiService;
         _scoreCounter = scoreCounter;
-        _hudWindowController = _uiService.Get<HUDWindowController>();
-        ScoreInit();
         _playerController.PlayerHpController.OnZeroHealth += StopGame;
     }
-    
 
-
+    [Inject]
+    void InjectControllers(UIMainMenuController uiMainMenuController,
+        UIGameWindowController uiGameWindowController,
+        UIEndGameWindowController uiEndGameWindowController,
+        HUDWindowController hudWindowController)
+    {
+        _uiService.Add<UIMainMenuWindow>(uiMainMenuController);
+        _uiService.Add<UIGameWindow>(uiGameWindowController);
+        _uiService.Add<UIEndGameWindow>(uiEndGameWindowController);
+        _uiService.Add<HUDWindow>(hudWindowController);
+    }
     private void ScoreInit()
     {
-        _scoreCounter.ScoreChangeNotify += _hudWindowController.ChangeScore;
-    }
-
-    public void InitGame()
-    {
-        _uiService.Show<UIMainMenuWindow>();
-        
-        _soundController.Play(SoundName.BackStart, loop:true);
+        var hudWindowController = (HUDWindowController)_uiService.GetController<HUDWindow>();
+        _scoreCounter.ScoreChangeNotify += hudWindowController.ChangeScore;
     }
 
     public void StartGame()
     {
         _soundController.Stop();
-        _soundController.Play(SoundName.BackMain, loop:true);
-        
+        _soundController.Play(SoundName.BackMain, loop: true);
+
         _playerController.Spawn();
         Debug.Log("as");
         _spawner.StartSpawn();
@@ -67,7 +61,14 @@ public class GameController
 
     public void StopGame()
     {
-        _playerController.DestroyView(()=>_gameWindowController.ShowEndMenuWindow());
+        _playerController.DestroyView(() => _uiService.ShowOnly<UIEndGameWindow>());
         _spawner.StopSpawn();
+    }
+
+    public void Initialize()
+    {
+        _uiService.Show<UIMainMenuWindow>();
+        ScoreInit();
+        _soundController.Play(SoundName.BackStart, loop: true);
     }
 }

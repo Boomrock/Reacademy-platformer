@@ -18,7 +18,7 @@ namespace UI.UIWindows
                 .SetEase(Ease.OutBack)
                 .OnComplete(() =>
                 {
-                    OnShowEvent.Invoke();
+                    OnShowEvent?.Invoke();
                 });
                 
         }
@@ -32,7 +32,7 @@ namespace UI.UIWindows
                 .DOMoveY(-transformPosition.y*2, Duration)
                 .OnComplete(() =>
                 {
-                    OnHideEvent.Invoke();
+                    OnHideEvent?.Invoke();
                 });
         }
     }

@@ -7,18 +7,16 @@ namespace UI.UIService
 {
        public class  UIService : IUIService
     {
-
-        private readonly UIRoot _uIRoot;
+        private readonly UIRoot _uiRoot;
         private readonly Dictionary<Type, IUIController> _controllersStorage = new Dictionary<Type,IUIController>();
         private readonly Dictionary<Type, IUIWindow> _initWindows= new Dictionary<Type, IUIWindow>();
 
         private const string UISource = "";
         
-        public UIService(UnityEngine.Camera camera)
+        public UIService(UnityEngine.Camera camera, UIRoot uiRoot)
         {
-            _uIRoot = Resources.Load<UIRoot>("UIRoot");
-            _uIRoot = Object.Instantiate(_uIRoot);
-            _uIRoot.RootCanvas.worldCamera = camera;
+            _uiRoot = uiRoot;
+            _uiRoot.RootCanvas.worldCamera = camera;
         }
 
         public TUIWindow Show<TUIWindow>() where TUIWindow : IUIWindow
@@ -31,7 +29,22 @@ namespace UI.UIService
             }
             return default;
         }
-        
+
+        public T ShowOnly<T>() where T : IUIWindow
+        {
+            HideAll();
+            return Show<T>();
+        }
+
+        public void HideAll(Action onEnd = null)
+        {
+            foreach (var pair in _controllersStorage)
+            {
+                pair.Value.HideWindow();
+            }
+            onEnd?.Invoke();
+        }
+
         public TUIWindow Get<TUIWindow>() where TUIWindow : IUIWindow
         {
             if (_initWindows.TryGetValue(typeof(TUIWindow), out var window))
@@ -40,15 +53,6 @@ namespace UI.UIService
             }
             return default;
         }
-        private IUIController GetController<T>() where T : IUIWindow
-        {
-            if (_controllersStorage.TryGetValue(typeof(T), out var controller))
-            {
-                return controller;
-            }
-            return default;
-        }
-
         public void Hide<T>(Action onEnd = null) where T : IUIWindow
         {
             var windowController = GetController<T>();
@@ -60,29 +64,20 @@ namespace UI.UIService
             }
         }
 
-        void Add<T>(IUIController controller) where T : IUIWindow
+        public bool Add<T>(IUIController controller) where T : IUIWindow
         {
-            _controllersStorage.Add(typeof(T), controller);
+            return _controllersStorage.TryAdd(typeof(T), controller);
         }  
-        private void Init(Type t, Transform parent = null)
+        public IUIController GetController<T>() where T : IUIWindow
         {
-            if(_controllersStorage.ContainsKey(t))
+            if (_controllersStorage.TryGetValue(typeof(T), out var controller))
             {
-                GameObject view = null;
-                if(parent!=null)
-                {
-                    view = Object.Instantiate(_controllersStorage[t].gameObject, parent);
-                }
-                else
-                {
-                    view = Object.Instantiate(_controllersStorage[t].gameObject);
-                }
-
-                var uiWindow = view.GetComponent<UIWindow>();
-                uiWindow.UIService = this;
-                
-                _initWindows.Add(t, view);
+                return controller;
             }
+            return default;
         }
+
+
+
     }
 }

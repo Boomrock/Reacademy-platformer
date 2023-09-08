@@ -13,4 +13,9 @@
     public const string SoundPoolView = "SoundPoolView";
     public const string SoundView = "SoundView";
     public const string FallObjectSpawnConfig = "FallObjectSpawnConfig";
+    public const string UIRoot = "UIRoot";
+    public const string UIEndGameWindow = "UIEndGameWindow";
+    public const string UIGameWindow = "UIGameWindow";
+    public const string UIMainMenuWindow = "UIMainMenuWindow";
+    public const string HUDWindow = "HUDWindow";
 }

@@ -1,31 +1,23 @@
 using UI.UIService;
-using UnityEngine;
 
 namespace UI.HUD
 {
-    public class HUDWindowController : IUIController
+    public class HUDWindowController : UIController<HUDWindow>
     {
-        private readonly UIService.UIService _uiService;
-        
-        private HUDWindow _hudWindowWindow;
-
-        public HUDWindowController(UIService.UIService uiService)
+        public HUDWindowController(HUDWindow window, UIRoot uiRoot) : base(window, uiRoot)
         {
-            _uiService = uiService;
-            _hudWindowWindow = uiService.Get<HUDWindow>();
-            
             SetParameters();
         }
         
         public void ChangeHealthPoint(float healthPoint)
         {
-            healthPoint = ChekHPPoint(healthPoint, _hudWindowWindow.СurrentHealth);
-            _hudWindowWindow.ChangeHealthBar(healthPoint);
+            healthPoint = ChekHPPoint(healthPoint, _window.СurrentHealth);
+            _window.ChangeHealthBar(healthPoint);
         }
         
         public void ChangeScore(int score)
         {
-            _hudWindowWindow.ChangeScoreText(score);
+            _window.ChangeScoreText(score);
         }
         
         public void SetParameters(int score = 0, float healthPoint = 100f)
@@ -33,7 +25,7 @@ namespace UI.HUD
             ChangeScore(score);
             
             healthPoint = ChekHPPoint(healthPoint);
-            _hudWindowWindow.ChangeHealthBar(healthPoint);
+            _window.ChangeHealthBar(healthPoint);
         }
 
         private float ChekHPPoint(float healthPoint, float currentHP = 0)
@@ -58,12 +50,27 @@ namespace UI.HUD
 
         public void ShowWindow()
         {
-            _hudWindowWindow.Show();
+            var transform = _window.transform;
+            transform.SetParent(_uiRoot.Container, false);
+            var windowPosition = transform.position;
+            windowPosition.y *= 2;
+            transform.position = windowPosition;
+            
+            _window.Show();
+
         }
 
         public void HideWindow()
         {
-            _hudWindowWindow.Hide();
+            var transform = _window.transform;
+            transform.SetParent(_uiRoot.Container, false);
+            var windowPosition = transform.position;
+            windowPosition.y *= 2;
+            transform.position = windowPosition;
+            
+            _window.Hide();
         }
+
+       
     }
 }

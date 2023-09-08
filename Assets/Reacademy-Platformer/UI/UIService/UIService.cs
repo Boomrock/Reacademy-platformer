@@ -5,13 +5,12 @@ using Object = UnityEngine.Object;
 
 namespace UI.UIService
 {
-       public class UIService : IUIService
+       public class  UIService : IUIService
     {
-        private Transform _deactivatedContainer;
-        
+
         private readonly UIRoot _uIRoot;
         private readonly Dictionary<Type, IUIController> _controllersStorage = new Dictionary<Type,IUIController>();
-        private readonly Dictionary<Type, GameObject> _initWindows= new Dictionary<Type, GameObject>();
+        private readonly Dictionary<Type, IUIWindow> _initWindows= new Dictionary<Type, IUIWindow>();
 
         private const string UISource = "";
         
@@ -20,54 +19,48 @@ namespace UI.UIService
             _uIRoot = Resources.Load<UIRoot>("UIRoot");
             _uIRoot = Object.Instantiate(_uIRoot);
             _uIRoot.RootCanvas.worldCamera = camera;
-
-            LoadWindows(UISource);
-            InitWindows(_uIRoot.PoolContainer);
         }
 
-        public T Show<T>() where T : IUIController
+        public TUIWindow Show<TUIWindow>() where TUIWindow : IUIWindow
         {
-            var window = Get<T>();
+            var window = GetController<TUIWindow>();
             if(window != null)
             {
-                window.transform.SetParent(_uIRoot.Container, false);
-
-                var windowPosition = window.transform.position;
-                windowPosition.y *= 2;
-                window.transform.position = windowPosition;
-                
-                window.Show();
-                return window;
+                window.ShowWindow();
+                return (TUIWindow)window.UIWindow;
             }
-            return null;
+            return default;
         }
         
-        public T Get<T>() where T : IUIController
+        public TUIWindow Get<TUIWindow>() where TUIWindow : IUIWindow
         {
-            var type = typeof(T);
-            if (_initWindows.ContainsKey(type))
+            if (_initWindows.TryGetValue(typeof(TUIWindow), out var window))
             {
-                var view = _initWindows[type];            
-                return view.GetComponent<T>();
+                return (TUIWindow)window;
+            }
+            return default;
+        }
+        private IUIController GetController<T>() where T : IUIWindow
+        {
+            if (_controllersStorage.TryGetValue(typeof(T), out var controller))
+            {
+                return controller;
             }
             return default;
         }
 
-        public void Hide<T>(Action onEnd = null) where T : IUIController
+        public void Hide<T>(Action onEnd = null) where T : IUIWindow
         {
-            var window = Get<T>();
+            var windowController = GetController<T>();
             
-            if(window!=null)
+            if(windowController!=null)
             {
-                void changeParent() => window.transform.SetParent(_uIRoot.PoolContainer);
-                window.OnHideEvent += changeParent;
-                window.Hide();
-                
+                windowController.HideWindow();
                 onEnd?.Invoke();
             }
         }
 
-        void Add<T>(T controller) where T : IUIController
+        void Add<T>(IUIController controller) where T : IUIWindow
         {
             _controllersStorage.Add(typeof(T), controller);
         }  

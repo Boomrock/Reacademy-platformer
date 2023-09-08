@@ -36,7 +36,7 @@ public class GameController
         _spawner = fallObjectSpawner;
         _uiService = uiService;
         _scoreCounter = scoreCounter;
-        _hudWindowController = _uiService.Get<HUDWindow>();
+        _hudWindowController = _uiService.Get<HUDWindowController>();
         ScoreInit();
         _playerController.PlayerHpController.OnZeroHealth += StopGame;
     }

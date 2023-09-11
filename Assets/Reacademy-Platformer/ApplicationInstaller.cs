@@ -1,4 +1,8 @@
 using Player;
+using Sounds;
+using UI.HUD;
+using UI.UIService;
+using UI.UIWindows;
 using UnityEngine;
 using Zenject;
 
@@ -8,29 +12,34 @@ namespace Reacademy_Platformer
     {
         public override void InstallBindings()
         {
-            /*public GameController(
-                PlayerController playerController,
-                SoundController soundController,
-                FallObjectSpawner fallObjectSpawner,
-                UIService uiService,
-                ScoreCounter scoreCounter
-            )*/
-            /*public PlayerController(
-                InputController inputController,
-                HUDWindowController hudWindowController,
-                UnityEngine.Camera camera,
-                SoundController soundController)
-            {*/
+        
             var camera = Container.InstantiatePrefabResourceForComponent<UnityEngine.Camera>(ResourcesConst.MainCamera);
-            Container.BindInterfacesAndSelfTo<InputController>()
-                .AsSingle();
-            
-            Container.Bind<PlayerController>();
             Container.Bind<UnityEngine.Camera>()
                 .FromInstance(camera);
-           
-            Container.Bind<GameController>()
-                .FromNew()
+            
+            Container.Bind<SoundPool>().AsSingle();
+            Container.Bind<SoundController>().AsSingle();
+            
+       
+            
+            
+            Container.BindInterfacesAndSelfTo<InputController>()
+                .AsSingle();
+            Container.Bind<ScoreCounter>().AsSingle();
+            Container.Bind<FallObjectSpawner>().AsSingle();
+            Container.Bind<PlayerController>()
+                .AsSingle()
+                .NonLazy();
+
+ 
+            
+            Container.Bind<UIService>().AsSingle();
+            Container.Bind<UIGameWindowController>().AsSingle();
+            Container.Bind<UIEndGameWindowController>().AsSingle();
+            Container.Bind<UIMainMenuController>().AsSingle();
+            Container.Bind<HUDWindowController>().AsSingle();
+
+            Container.BindInterfacesAndSelfTo<GameController>()
                 .AsSingle();
 
         }

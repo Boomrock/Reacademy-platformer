@@ -1,3 +1,5 @@
+using Zenject;
+
 namespace UI.UIWindows
 {
     public class UIEndGameWindowController
@@ -6,17 +8,21 @@ namespace UI.UIWindows
        
         private UIEndGameWindow _endGameWindow;
         private GameController _gameController;
-        public UIEndGameWindowController(UIService.UIService uiService, GameController gameController)
+        public UIEndGameWindowController(UIService.UIService uiService)
         {
             _uiService = uiService;
-            _gameController = gameController;
             _endGameWindow = uiService.Get<UIEndGameWindow>();
 
            
             _endGameWindow.OnShowEvent += ShowWindow;
             _endGameWindow.OnHideEvent += HideWindow;
         }
-
+        [Inject]
+        void LateConstructor(GameController gameController)
+        {
+            _gameController = gameController;
+        }
+        
         private void ShowWindow()
         {
             _endGameWindow.OnReturnButtonClickEvent += ShowGameWindows;

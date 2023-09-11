@@ -1,4 +1,6 @@
-﻿namespace UI.UIWindows
+﻿using Zenject;
+
+namespace UI.UIWindows
 {
     public class UIMainMenuController
     {
@@ -7,16 +9,20 @@
         private UIMainMenuWindow _mainMenuWindow;
         private GameController _gameController;
 
-        public UIMainMenuController(UIService.UIService uiService, GameController gameController)
+        public UIMainMenuController(UIService.UIService uiService)
         {
             _uiService = uiService;
-            _gameController = gameController;
             _mainMenuWindow = uiService.Get<UIMainMenuWindow>();
             
             _mainMenuWindow.OnShowEvent += ShowWindow;
             _mainMenuWindow.OnHideEvent += HideWindow;
         }
 
+        [Inject]
+        void LateConstructor(GameController gameController)
+        {
+            _gameController = gameController;
+        }
         private void ShowWindow()
         {
             _mainMenuWindow.OnStartButtonClickEvent += ShowGameWindow;

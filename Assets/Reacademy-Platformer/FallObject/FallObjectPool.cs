@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using FallObject;
 using UnityEngine;
+using Zenject;
 
-public class FallObjectPool
+public class FallObjectPool : MemoryPool<FallObjectType, FallObjectController>
 {
-    private readonly FallObjectFactory _factory;
+    /*private readonly FallObjectFactory _factory;
     private readonly ScoreCounter _scoreCounter;
 
     private Dictionary<FallObjectView, FallObjectController> _pool;
@@ -82,5 +83,5 @@ public class FallObjectPool
                 ReturnToPool(fallObject);
             }
         }
-    }
+    }*/
 }

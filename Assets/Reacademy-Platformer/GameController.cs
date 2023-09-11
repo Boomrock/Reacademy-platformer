@@ -3,8 +3,9 @@ using Sounds;
 using UI.HUD;
 using UI.UIService;
 using UI.UIWindows;
+using Zenject;
 
-public class GameController
+public class GameController: IInitializable
 {
     private readonly UnityEngine.Camera _camera;
     
@@ -12,13 +13,13 @@ public class GameController
     private InputController _inputController;
     private PlayerController _playerController;
     private UIService _uiService;
-    private UIMainMenuController _mainMenuWindowController;
-    private UIGameWindowController _gameWindowController;
-    private UIEndGameWindowController _endMenuWindowController;
+    private UIMainMenuController _uiMainMenuController;
+    private UIGameWindowController _uiGameWindowController;
+    private UIEndGameWindowController _uiEndGameWindowController;
     private HUDWindowController _hudWindowController;
     private ScoreCounter _scoreCounter;
     private SoundController _soundController;
-    
+
     public GameController(UnityEngine.Camera camera, 
         InputController inputController, 
         PlayerController playerController, 
@@ -35,35 +36,25 @@ public class GameController
         _spawner = fallObjectSpawner;
         _uiService = uiService;
         _scoreCounter = scoreCounter;
-        UIInit();
-        ScoreInit();
-        
-   
-
-        _playerController.PlayerHpController.OnZeroHealth += StopGame;
     }
-    
-    private void UIInit()
+    [Inject]
+    private void UIInit(UIMainMenuController uiMainMenuController,
+        UIGameWindowController uiGameWindowController, 
+        UIEndGameWindowController uiEndGameWindowController,
+        HUDWindowController hudWindowController)
     {
-        _mainMenuWindowController = new UIMainMenuController(_uiService, this);
-        _gameWindowController = new UIGameWindowController(_uiService);
-        _endMenuWindowController = new UIEndGameWindowController(_uiService, this);
-        _hudWindowController = new HUDWindowController(_uiService);
+         _uiMainMenuController = uiMainMenuController;
+         _uiGameWindowController = uiGameWindowController;
+         _uiEndGameWindowController = uiEndGameWindowController;
+         _hudWindowController = hudWindowController;
+
     }
 
     private void ScoreInit()
     {
-        _scoreCounter = new ScoreCounter(_soundController);
         _scoreCounter.ScoreChangeNotify += _hudWindowController.ChangeScore;
     }
-
-    public void InitGame()
-    {
-        _uiService.Show<UIMainMenuWindow>();
-        
-        _soundController.Play(SoundName.BackStart, loop:true);
-    }
-
+    
     public void StartGame()
     {
         _soundController.Stop();
@@ -75,7 +66,15 @@ public class GameController
 
     public void StopGame()
     {
-        _playerController.DestroyView(()=>_gameWindowController.ShowEndMenuWindow());
+        _playerController.DestroyView(()=>_uiGameWindowController.ShowEndMenuWindow());
         _spawner.StopSpawn();
+    }
+
+    public void Initialize()
+    {
+        ScoreInit();
+        _playerController.PlayerHpController.OnZeroHealth += StopGame;
+        _uiService.Show<UIMainMenuWindow>();
+        _soundController.Play(SoundName.BackStart, loop:true);
     }
 }

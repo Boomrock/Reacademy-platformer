@@ -22,7 +22,7 @@ public class FallObjectSpawner : ITickable
     private int _typesCount;
     private bool _gameIsOn;
 
-    public FallObjectSpawner(ScoreCounter scoreCounter)
+    public FallObjectSpawner(FallObjectPool pool)
     {
         var spawnerConfig = Resources.Load<FallObjectSpawnConfig>(ResourcesConst.FallObjectSpawnConfig);
         _positionY = spawnerConfig.PositionY;
@@ -33,7 +33,7 @@ public class FallObjectSpawner : ITickable
         _delayStartSpawn = spawnerConfig.DelayStartSpawn;
         _spawnPosition = new Vector2(Random.Range(_minPositionX, _maxPositionX), _positionY);
 
-        _pool = new FallObjectPool(new FallObjectFactory(), scoreCounter);
+        _pool = pool;  
         _spawnPeriod = Random.Range(_spawnPeriodMin, _spawnPeriodMax);
         _typesCount = Enum.GetValues(typeof(FallObjectType)).Length;
     }
@@ -47,14 +47,13 @@ public class FallObjectSpawner : ITickable
     public void StopSpawn()
     {
         _gameIsOn = false;
-        Pool.AllReturnToPool();
     }
     private void SpawnNewObject()
     {
         var type = Random.Range(0, _typesCount);
-        var newObject = _pool.CreateObject((FallObjectType)type);
+        var newObject = _pool.Spawn((FallObjectType)type);
         _spawnPosition.x = Random.Range(_minPositionX, _maxPositionX);
-        newObject.gameObject.transform.position = _spawnPosition;
+        newObject.View.transform.position = _spawnPosition;
     }
 
     public void Tick()

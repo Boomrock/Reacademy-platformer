@@ -1,3 +1,4 @@
+using FallObject;
 using Player;
 using Sounds;
 using UI.HUD;
@@ -17,14 +18,15 @@ namespace Reacademy_Platformer
             /*public GameController(
                 FallObjectSpawner fallObjectSpawner,
                 */
-            
+            Container.BindMemoryPool<FallObjectView, FallObjectView.Pool>().WithInitialSize(2)
+                .FromComponentInNewPrefabResource("EnemyView")
+                .UnderTransformGroup("Foos");
             var camera = Container.InstantiatePrefabResourceForComponent<UnityEngine.Camera>(ResourcesConst.MainCamera);
             Container.Bind<UnityEngine.Camera>()
                 .FromInstance(camera);
             
             Container.Bind<SoundPool>().AsSingle();
             Container.Bind<SoundController>().AsSingle();
-            
        
             
             
@@ -36,31 +38,6 @@ namespace Reacademy_Platformer
                 .AsSingle()
                 .NonLazy();
 
-            Container.Bind<UIRoot>()
-                .FromComponentInNewPrefabResource(ResourcesConst.UIRoot)
-                .AsSingle();
-            Container.Bind<UIService>().AsSingle();
-
-            Container.Bind<UIMainMenuWindow>().FromComponentInNewPrefabResource(ResourcesConst.UIMainMenuWindow)
-                .AsSingle();
-            Container.Bind<UIGameWindow>().FromComponentInNewPrefabResource(ResourcesConst.UIGameWindow)
-                .AsSingle();
-            Container.Bind<UIEndGameWindow>().FromComponentInNewPrefabResource(ResourcesConst.UIEndGameWindow)
-                .AsSingle();
-            Container.Bind<HUDWindow>().FromComponentInNewPrefabResource(ResourcesConst.HUDWindow)
-                .AsSingle();
-            
-            Container.Bind<UIMainMenuController>()
-                .AsSingle();
-            Container.Bind<UIGameWindowController>()
-                .AsSingle()
-                .NonLazy();
-            Container.Bind<UIEndGameWindowController>()
-                .AsSingle()
-                .NonLazy();
-            Container.Bind<HUDWindowController>()
-                .AsSingle()
-                .NonLazy();
 
             Container.BindInterfacesAndSelfTo<GameController>()
                 .AsSingle();

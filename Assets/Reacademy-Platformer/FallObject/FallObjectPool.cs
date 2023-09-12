@@ -1,86 +1,34 @@
 using System.Collections.Generic;
 using FallObject;
 using UnityEngine;
+using Zenject;
 
-public class FallObjectPool
+public class FallObjectPool : MemoryPool<FallObjectType, FallObjectController>
 {
-    private readonly FallObjectFactory _factory;
-    private readonly ScoreCounter _scoreCounter;
-
-    private Dictionary<FallObjectView, FallObjectController> _pool;
-
-    private GameObject _container; 
-
-    public FallObjectPool(FallObjectFactory factory, ScoreCounter scoreCounter)
-    {
-        _factory = factory;
-        _scoreCounter = scoreCounter;
-        _pool = new Dictionary<FallObjectView, FallObjectController>();
-        _container = new GameObject("FallObjects");
-    }
-
-    public FallObjectView CreateObject(FallObjectType type)
-    {
-        var freeObject = GetFreeElement();
-
-        if (freeObject)
-        {
-            return freeObject;
-        }
+    public FallObjectConfig ObjectConfig => _objectConfig;
         
-        var controller = _factory.Create(type);
-        var view = controller.View;
+    private FallObjectConfig _objectConfig = Resources.Load<FallObjectConfig>(ResourcesConst.FallObjectConfigPath);
+    private FallObjectView _objectView = Resources.Load<FallObjectView>(ResourcesConst.FallObjectViewPath);
+
+    public FallObjectPool()
+    {
         
-        controller.SetActive(true);
-        view.transform.parent = _container.transform;
-        controller.ObjectFellNotify += (FallObjectController) => ReturnToPool(view);
-        controller.DeathAnimationEndedNotify += (FallObjectController) => ReturnToPool(view);
-        controller.PlayerCatchFallingObjectNotify += _scoreCounter.PlayerCatchFallObjectEventHandler;
-        
-        _pool.Add(view, controller);
-
-        return view;
+    }
+    protected override void OnCreated(FallObjectController item)
+    {
+        var view = GameObject.Instantiate(_objectView);
+        var model = _objectConfig.Get(FallObjectType.Type1);
+        item = new FallObjectController(view, model);
+        base.OnCreated(item);
     }
 
-    private FallObjectView GetFreeElement()
+    protected override void Reinitialize(FallObjectType type, FallObjectController fallObjectView)
     {
-        foreach (var fallObjectController in _pool.Values)
-        {
-            if (!fallObjectController.View.gameObject.activeInHierarchy)
-            {
-                fallObjectController.SetActive(true);
-                return fallObjectController.View;
-            }
-        }
-        
-        return null;
-    }
+        var view = GameObject.Instantiate(_objectView);
+        var model = _objectConfig.Get(type);
 
-    public void ReturnToPool(FallObjectView fallObject)
-    {
-        if (_pool.TryGetValue(fallObject, out var controller))
-        {
-            controller.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("There is no such object in pool");
-            return;
-        }
+        fallObjectView.View.SpriteRenderer.sprite = model.ObjectSprite;
+        fallObjectView.View.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
     }
-
-    public FallObjectController GetController(FallObjectView view)
-    {
-        return _pool[view];
-    }
-    public void AllReturnToPool()
-    {
-        foreach (var fallObject in _pool.Keys)
-        {
-            if (fallObject.gameObject.activeInHierarchy)
-            {
-                ReturnToPool(fallObject);
-            }
-        }
-    }
+  
 }

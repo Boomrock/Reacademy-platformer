@@ -1,9 +1,9 @@
-using Academy_Platformer;
 using UnityEngine;
+using Zenject;
 
 namespace FallObject
 {
-    public class FallObjectFactory
+    public class FallObjectFactory : IFactory<FallObjectType , FallObjectController>
     {
         public FallObjectConfig ObjectConfig => _objectConfig;
         

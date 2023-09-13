@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace FallObject
@@ -7,49 +9,37 @@ namespace FallObject
     public class FallObjectView : MonoBehaviour
     {
 
-        public SpriteRenderer SpriteRenderer => spriteRenderer;
+        public SpriteRenderer SpriteRenderer => _spriteRenderer;
         
-        public event Action<Collision2D> OnCollisionEnter2DNotify; 
-        
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        private void Reinit(SpriteRenderer spriteRenderer1)
-        {
-            throw new NotImplementedException();
+        public event Action<Collision2D> OnCollisionEnter2DNotify;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        private void Reinit(Sprite sprite)
+        {   
+            _spriteRenderer.sprite = sprite;
         }
         private void OnCollisionEnter2D(Collision2D other)
         {
             OnCollisionEnter2DNotify?.Invoke(other);
         }
-        public class Pool : MemoryPool<SpriteRenderer, FallObjectView>
+        public class Pool : MemoryPool<FallObjectType, FallObjectView>
         {
-            protected override void OnCreated(FallObjectView item)
-            {
-                // Called immediately after the item is first added to the pool
-            }
-
-            protected override void OnDestroyed(FallObjectView item)
-            {
-                // Called immediately after the item is removed from the pool without also being spawned
-                // This occurs when the pool is shrunk either by using WithMaxSize or by explicitly shrinking the pool by calling the `ShrinkBy` / `Resize methods
-            }
-
-            protected override void OnSpawned(FallObjectView item)
-            {
-                // Called immediately after the item is removed from the pool
-            }
-
+            private readonly FallObjectStorage _fallObjectStorage;
+            public FallObjectConfig ObjectConfig = Resources.Load<FallObjectConfig>(ResourcesConst.FallObjectConfigPath);
             protected override void OnDespawned(FallObjectView item)
             {
-                // Called immediately after the item is returned to the pool
+                _fallObjectStorage.Get(item).SetActive(false);
             }
 
-            protected override void Reinitialize(SpriteRenderer s, FallObjectView fallObjectView)
+            protected override void Reinitialize(FallObjectType type, FallObjectView fallObjectView)
             {
-                // Similar to OnSpawned
-                // Called immediately after the item is removed from the pool
-                // This method will also contain any parameters that are passed along
-                // to the memory pool from the spawning code
-                fallObjectView.Reinit(s);
+                var fallObjectController = _fallObjectStorage.Get(fallObjectView);
+                if (fallObjectController == null)
+                {
+                    fallObjectController = new FallObjectController(fallObjectView, ObjectConfig.Get(type));
+                    _fallObjectStorage.Add(fallObjectView,fallObjectController);
+                }
+                fallObjectView.Reinit(ObjectConfig.Get(type).ObjectSprite);
+                fallObjectController.SetActive(true);
             }
         }
 

@@ -5,32 +5,30 @@ namespace FallObject
 {
     public class FallObjectStorage
     {
-        private Dictionary<int, FallObjectView> _storage = new Dictionary<int, FallObjectView>();
+        private Dictionary<FallObjectView, FallObjectController> _storage = new Dictionary<FallObjectView, FallObjectController>();
 
-        public void Add(FallObjectView fallObjectView)
+        public void Add(FallObjectView fallObjectView, FallObjectController fallObjectController )
         {
             if (fallObjectView == null)
             {
                 Debug.Log("[FallObjectStorage.Add] Fall object is null");
                 return;
             }
-            _storage.Add(fallObjectView.GetInstanceID(), fallObjectView);
+            _storage.Add(fallObjectView, fallObjectController);
         }
 
-        public FallObjectView Get(int index)
+        public FallObjectController Get(FallObjectView fallObjectView)
         {
-            if (_storage.TryGetValue(index, out var value))
+            if (_storage.TryGetValue(fallObjectView, out var value))
             {
                 return value;
             }
-        
-            Debug.Log("[FallObjectStorage.Get] Failed to get value by that id. Try another id.");
             return null;
         }
 
-        public void Delete(int index)
+        public void Delete(FallObjectView fallObjectView)
         {
-            if (_storage.Remove(index))
+            if (_storage.Remove(fallObjectView))
             {
                 return;
             }

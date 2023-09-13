@@ -90,7 +90,7 @@ namespace FallObject
             _damage = model.Damage;
             _view.SpriteRenderer.sprite = model.ObjectSprite;
         }
-
+        
 
     }
 }

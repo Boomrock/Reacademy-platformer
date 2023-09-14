@@ -15,6 +15,7 @@ namespace FallObject
         [SerializeField] private SpriteRenderer _spriteRenderer;
         private void Reinit(Sprite sprite)
         {   
+
             _spriteRenderer.sprite = sprite;
         }
         private void OnCollisionEnter2D(Collision2D other)
@@ -24,7 +25,14 @@ namespace FallObject
         public class Pool : MemoryPool<FallObjectType, FallObjectView>
         {
             private readonly FallObjectStorage _fallObjectStorage;
+            private readonly TickableManager _tickableManager;
             public FallObjectConfig ObjectConfig = Resources.Load<FallObjectConfig>(ResourcesConst.FallObjectConfigPath);
+
+            public Pool(FallObjectStorage fallObjectStorage, TickableManager tickableManager)
+            {
+                _fallObjectStorage = fallObjectStorage;
+                _tickableManager = tickableManager;
+            }
             protected override void OnDespawned(FallObjectView item)
             {
                 _fallObjectStorage.Get(item).SetActive(false);
@@ -35,8 +43,9 @@ namespace FallObject
                 var fallObjectController = _fallObjectStorage.Get(fallObjectView);
                 if (fallObjectController == null)
                 {
-                    fallObjectController = new FallObjectController(fallObjectView, ObjectConfig.Get(type));
-                    _fallObjectStorage.Add(fallObjectView,fallObjectController);
+                    fallObjectController = new FallObjectController(fallObjectView, ObjectConfig.Get(type), _tickableManager);
+                    fallObjectController.PlayerCatchFallingObjectNotify += (FallObjectController _) => Despawn(fallObjectView);
+                    _fallObjectStorage.Add(fallObjectView, fallObjectController);
                 }
                 fallObjectView.Reinit(ObjectConfig.Get(type).ObjectSprite);
                 fallObjectController.SetActive(true);

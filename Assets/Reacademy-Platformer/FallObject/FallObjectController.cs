@@ -16,22 +16,25 @@ namespace FallObject
         public FallObjectModel Model => _model;
         public int Damage => _damage;
 
-        private Vector3 _defaultScale = new Vector3(0.15f, 0.15f, 0.15f);
-        private Vector3 _deltaVector = new Vector3(0, -0.001f, 0);
-        private FallObjectAnimator _animator;
-        private FallObjectView _view;
-        private FallObjectModel _model;
+        private readonly TickableManager _tickableManager;
+        private readonly Vector3 _defaultScale = new Vector3(0.15f, 0.15f, 0.15f);
+        private readonly Vector3 _deltaVector = new Vector3(0, -0.001f, 0);
+        private readonly FallObjectAnimator _animator;
+        private readonly FallObjectView _view;
+        private readonly FallObjectModel _model;
         private int _pointsPerObject;
-        private float _minPositionY = -7f;
+        private readonly float _minPositionY = -7f;
         private float _fallSpeed;
         private int _damage;
         private bool _isCatched;
 
         public FallObjectController(
             FallObjectView view,
-            FallObjectModel model)
+            FallObjectModel model, 
+            TickableManager tickableManager)
         {
             _model = model;
+            _tickableManager = tickableManager;
             _pointsPerObject = model.PointsPerObject;
             _fallSpeed = model.FallSpeed;
             _damage = model.Damage;
@@ -56,17 +59,15 @@ namespace FallObject
                 PlayerCatchFallingObjectNotify?.Invoke(this);
                 _isCatched = true;
 
-                if (_model.Type == FallObjectType.Type2)
+                /*if (_model.Type == FallObjectType.Type2)
                 {
                     DamageToPlayerNotify?.Invoke(_damage);
-                }
+                }*/
             }
         }
 
         public void FixedTick()
         {
-            if (!View.gameObject.activeSelf) { return;}
-            
             if (_view.transform.position.y <= _minPositionY)
             {
                 ObjectFellNotify?.Invoke(this);
@@ -81,6 +82,15 @@ namespace FallObject
             _view.transform.localScale = _defaultScale;
             View.gameObject.SetActive(value);
             _isCatched = !value;
+            if (value)
+            {
+                _tickableManager.AddFixed(this);
+            }
+            else
+            {
+                Debug.Log("RemoveFixed");
+                _tickableManager.RemoveFixed(this);   
+            }
         }
         
         public void SetModel(FallObjectModel model)

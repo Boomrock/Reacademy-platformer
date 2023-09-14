@@ -1,11 +1,7 @@
 using FallObject;
 using Player;
+using Reacademy_Platformer.Installs;
 using Sounds;
-using UI.HUD;
-using UI.UIService;
-using UI.UIWindows;
-using Unity.VisualScripting;
-using UnityEngine;
 using Zenject;
 
 namespace Reacademy_Platformer
@@ -18,9 +14,13 @@ namespace Reacademy_Platformer
             /*public GameController(
                 FallObjectSpawner fallObjectSpawner,
                 */
+            BindingUIServices.Install(Container);
+
+            Container.Bind<FallObjectStorage>().AsSingle();
+            
             Container.BindMemoryPool<FallObjectView, FallObjectView.Pool>().WithInitialSize(2)
-                .FromComponentInNewPrefabResource("EnemyView")
-                .UnderTransformGroup("Foos");
+                .FromComponentInNewPrefabResource(ResourcesConst.FallObjectView)
+                .UnderTransformGroup("FallObject");
             var camera = Container.InstantiatePrefabResourceForComponent<UnityEngine.Camera>(ResourcesConst.MainCamera);
             Container.Bind<UnityEngine.Camera>()
                 .FromInstance(camera);

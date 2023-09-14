@@ -14,7 +14,6 @@ namespace UI.UIService
         public UIController(TUIWindow window, UIRoot uiRoot)
         {
             _uiRoot = uiRoot;
-            Debug.Log(uiRoot.IsPrefabDefinition());
             _window = window;
         }
 

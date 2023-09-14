@@ -17,17 +17,17 @@ namespace Player
         
         public const float DelayDestroyPlayer = 2f;
 
+        private PlayerMovementController _playerMovementController;
+        private PlayerHpController _playerHpController;
         private SoundController _soundController;
         private InputController _inputController;
-        private PlayerConfig _playerConfig;
-        private PlayerView _playerView;
-        private PlayerHpController _playerHpController;
         private IFactoryCharacter _factoryPlayer;
-        private PlayerStorage _playerStorage;
-        private PlayerMovementController _playerMovementController;
         private PlayerAnimator _playerAnimator;
+        private PlayerStorage _playerStorage;
+        private PlayerConfig _playerConfig;
         private UnityEngine.Camera _camera;
-        
+        private PlayerView _playerView;
+
         private float _currentHealth;
         private float _currentSpeed;
 

@@ -22,7 +22,7 @@ public class FallObjectSpawner : ITickable
     private float _spawnPeriod;
     private float _timer;
 
-    public FallObjectSpawner(FallObjectView.Pool pool, TickableManager tickableManager, FallObjectStorage fallObjectStorage)
+    public FallObjectSpawner(FallObjectView.Pool pool, TickableManager tickableManager)
     {
         var spawnerConfig = Resources.Load<FallObjectSpawnConfig>(ResourcesConst.FallObjectSpawnConfig);
         _delayStartSpawn = spawnerConfig.DelayStartSpawn;

@@ -55,7 +55,6 @@ public class GameController : IInitializable
         _soundController.Play(SoundName.BackMain, loop: true);
 
         _playerController.Spawn();
-        Debug.Log("as");
         _spawner.StartSpawn();
     }
 

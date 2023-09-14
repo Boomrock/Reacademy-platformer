@@ -5,15 +5,17 @@ namespace FallObject
 {
     public class FallObjectStorage
     {
-        private Dictionary<FallObjectView, FallObjectController> _storage = new Dictionary<FallObjectView, FallObjectController>();
+        private Dictionary<FallObjectView, FallObjectController> _storage =
+            new Dictionary<FallObjectView, FallObjectController>();
 
-        public void Add(FallObjectView fallObjectView, FallObjectController fallObjectController )
+        public void Add(FallObjectView fallObjectView, FallObjectController fallObjectController)
         {
             if (fallObjectView == null)
             {
                 Debug.Log("[FallObjectStorage.Add] Fall object is null");
                 return;
             }
+
             _storage.Add(fallObjectView, fallObjectController);
         }
 
@@ -23,6 +25,7 @@ namespace FallObject
             {
                 return value;
             }
+
             return null;
         }
 
@@ -32,7 +35,7 @@ namespace FallObject
             {
                 return;
             }
-        
+
             Debug.Log("[FallObjectStorage.Delete] Failed to delete value by that id.Try another id.");
         }
     }

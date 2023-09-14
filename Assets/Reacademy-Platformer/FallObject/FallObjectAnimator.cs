@@ -44,7 +44,10 @@ namespace FallObject
 
             _sequenceDeath.Append(_fallObjectView.transform
                 .DOScale(Vector3.zero, DeathAnimDuration)).
-                OnComplete(() => DeathAnimationEnded?.Invoke());
+                OnComplete(() =>
+                {
+                    DeathAnimationEnded?.Invoke();
+                });
         }
     }
 }

@@ -21,20 +21,23 @@ public class FallObjectSpawner : ITickable
     private Vector3 _spawnPosition;
     private float _spawnPeriod;
     private float _timer;
+    private FallObjectStorage _fallObjectStorage;
+    private readonly FallObjectConfig _objectConfig;
 
-    public FallObjectSpawner(FallObjectView.Pool pool, TickableManager tickableManager)
+    public FallObjectSpawner(FallObjectView.Pool pool, TickableManager tickableManager, FallObjectStorage fallObjectStorage, FallObjectConfig objectConfig)
     {
         var spawnerConfig = Resources.Load<FallObjectSpawnConfig>(ResourcesConst.FallObjectSpawnConfig);
         _delayStartSpawn = spawnerConfig.DelayStartSpawn;
         _spawnPeriodMax = spawnerConfig.SpawnPeriodMax;
         _spawnPeriodMin = spawnerConfig.SpawnPeriodMin;
-        var positionY = spawnerConfig.PositionY;
         _minPositionX = spawnerConfig.MinPositionX;
         _maxPositionX = spawnerConfig.MaxPositionX;
-        _spawnPosition = new Vector2(Random.Range(_minPositionX, _maxPositionX), positionY);
+        _spawnPosition = new Vector2(Random.Range(_minPositionX, _maxPositionX), spawnerConfig.PositionY);
 
         _pool = pool;
         _tickableManager = tickableManager;
+        _fallObjectStorage = fallObjectStorage;
+        _objectConfig = objectConfig;
         _typesCount = Enum.GetValues(typeof(FallObjectType)).Length;
         _spawnPeriod = Random.Range(_spawnPeriodMin, _spawnPeriodMax);
     }
@@ -52,10 +55,17 @@ public class FallObjectSpawner : ITickable
     private void SpawnNewObject()
     {
         var type = Random.Range(0, _typesCount);
-        var newObject = _pool.Spawn((FallObjectType)type);
-
+        var fallObjectView = _pool.Spawn((FallObjectType)type);
+        var fallObjectController = _fallObjectStorage.Get(fallObjectView);
+        if (fallObjectController == null)
+        {
+            fallObjectController = new FallObjectController(fallObjectView, _objectConfig.Get((FallObjectType)type), _tickableManager);
+            fallObjectController.PlayerCatchFallingObjectNotify += (FallObjectController _) => _pool.Despawn(fallObjectView);
+            _fallObjectStorage.Add(fallObjectView, fallObjectController);
+        }
+        fallObjectView.gameObject.SetActive(true);
         _spawnPosition.x = Random.Range(_minPositionX, _maxPositionX);
-        newObject.transform.position = _spawnPosition;
+        fallObjectView.transform.position = _spawnPosition;
     }
 
 

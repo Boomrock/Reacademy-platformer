@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
@@ -12,10 +13,22 @@ namespace FallObject
         public SpriteRenderer SpriteRenderer => _spriteRenderer;
         
         public event Action<Collision2D> OnCollisionEnter2DNotify;
+        public event Action<bool> OnActiveNotify;
+
+
+        private void OnEnable()
+        {
+            OnActiveNotify?.Invoke(true);
+        }
+
+        private void OnDisable()
+        {
+            OnActiveNotify?.Invoke(false);
+        }
+
         [SerializeField] private SpriteRenderer _spriteRenderer;
         private void Reinit(Sprite sprite)
         {   
-
             _spriteRenderer.sprite = sprite;
         }
         private void OnCollisionEnter2D(Collision2D other)
@@ -24,31 +37,21 @@ namespace FallObject
         }
         public class Pool : MemoryPool<FallObjectType, FallObjectView>
         {
-            private readonly FallObjectStorage _fallObjectStorage;
-            private readonly TickableManager _tickableManager;
-            public FallObjectConfig ObjectConfig = Resources.Load<FallObjectConfig>(ResourcesConst.FallObjectConfigPath);
+            private readonly FallObjectConfig _objectConfig;
 
-            public Pool(FallObjectStorage fallObjectStorage, TickableManager tickableManager)
+            public Pool(FallObjectConfig objectConfig)
             {
-                _fallObjectStorage = fallObjectStorage;
-                _tickableManager = tickableManager;
+                _objectConfig = objectConfig;
             }
             protected override void OnDespawned(FallObjectView item)
             {
-                _fallObjectStorage.Get(item).SetActive(false);
+                item.GameObject().SetActive(false);
             }
 
             protected override void Reinitialize(FallObjectType type, FallObjectView fallObjectView)
             {
-                var fallObjectController = _fallObjectStorage.Get(fallObjectView);
-                if (fallObjectController == null)
-                {
-                    fallObjectController = new FallObjectController(fallObjectView, ObjectConfig.Get(type), _tickableManager);
-                    fallObjectController.PlayerCatchFallingObjectNotify += (FallObjectController _) => Despawn(fallObjectView);
-                    _fallObjectStorage.Add(fallObjectView, fallObjectController);
-                }
-                fallObjectView.Reinit(ObjectConfig.Get(type).ObjectSprite);
-                fallObjectController.SetActive(true);
+                fallObjectView.Reinit(_objectConfig.Get(type).ObjectSprite);
+                fallObjectView.GameObject().SetActive(false);
             }
         }
 

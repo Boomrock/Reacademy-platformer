@@ -40,6 +40,7 @@ namespace FallObject
             _damage = model.Damage;
 
             _view = view;
+            _view.OnActiveNotify += SetActive;
             _view.transform.localScale = _defaultScale;
             
             _animator = new FallObjectAnimator(this);
@@ -58,11 +59,7 @@ namespace FallObject
             {
                 PlayerCatchFallingObjectNotify?.Invoke(this);
                 _isCatched = true;
-
-                /*if (_model.Type == FallObjectType.Type2)
-                {
-                    DamageToPlayerNotify?.Invoke(_damage);
-                }*/
+                
             }
         }
 
@@ -79,8 +76,9 @@ namespace FallObject
 
         public void SetActive(bool value)
         {
+            Debug.Log("SetActive");
+
             _view.transform.localScale = _defaultScale;
-            View.gameObject.SetActive(value);
             _isCatched = !value;
             if (value)
             {
@@ -88,7 +86,6 @@ namespace FallObject
             }
             else
             {
-                Debug.Log("RemoveFixed");
                 _tickableManager.RemoveFixed(this);   
             }
         }

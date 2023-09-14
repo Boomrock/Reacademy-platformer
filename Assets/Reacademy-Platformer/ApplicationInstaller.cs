@@ -16,9 +16,14 @@ namespace Reacademy_Platformer
                 */
             BindingUIServices.Install(Container);
 
+            Container.Bind<FallObjectConfig>()
+                .FromScriptableObjectResource(ResourcesConst.FallObjectConfigPath)
+                .AsSingle();
+
             Container.Bind<FallObjectStorage>().AsSingle();
             
-            Container.BindMemoryPool<FallObjectView, FallObjectView.Pool>().WithInitialSize(2)
+            Container.BindMemoryPool<FallObjectView, FallObjectView.Pool>()
+                .WithInitialSize(2)
                 .FromComponentInNewPrefabResource(ResourcesConst.FallObjectView)
                 .UnderTransformGroup("FallObject");
             var camera = Container.InstantiatePrefabResourceForComponent<UnityEngine.Camera>(ResourcesConst.MainCamera);

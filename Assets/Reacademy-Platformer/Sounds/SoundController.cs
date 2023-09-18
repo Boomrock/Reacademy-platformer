@@ -1,30 +1,43 @@
+using System.Collections.Generic;
+
 namespace Sounds
 {
     public class SoundController
     {
-        private SoundPool _soundPool;
+        private SoundView.Pool _soundPool;
+        private Stack<SoundView> _soundViews = new();
 
-        public SoundController(SoundPool soundPool)
+        public SoundController(SoundView.Pool soundPool)
         {
             _soundPool = soundPool;
         }
         
-        public void Play(SoundName soundName, float volume = 1, bool loop = false)
+        public void Play(SoundProtocol protocol)
         {
             SwitchOff();
             
-            var sound = _soundPool.TakeFromPool(soundName, volume, loop);
+            var sound = _soundPool.Spawn(protocol);
             sound.AudioSource.Play();
+            _soundViews.Push(sound);
         }
 
         public void SwitchOff()
         {
-            _soundPool.DisableCompletedSounds();
+            foreach (var sound in _soundViews)
+            {
+                if (!sound.AudioSource.isPlaying)
+                {
+                    _soundPool.Despawn(sound);
+                }
+            }
         }
 
         public void Stop()
         {
-            _soundPool.MuteSound();
+            foreach (var sound in _soundViews)
+            {
+                _soundPool.Despawn(sound);
+            }
         }
     }
 }

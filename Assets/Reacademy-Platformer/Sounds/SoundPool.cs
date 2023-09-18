@@ -12,7 +12,6 @@ namespace Sounds
 
         public SoundPool()
         {
-            _soundPool = new GameObject("SoundPool");
             _listSoundViews = new List<SoundView>();
             _soundView = Resources.Load<SoundView>(ResourcesConst.SoundView);
             _soundConfig = Resources.Load<SoundConfig>(ResourcesConst.SoundConfig);
@@ -30,14 +29,14 @@ namespace Sounds
             }
         }
 
-        public SoundView TakeFromPool(SoundName soundName, float volume, bool loop)
+        public SoundView TakeFromPool(SoundProtocol protocol)
         {
             var sound = _listSoundViews[SearchEmptySoundView()];
 
             sound.gameObject.SetActive(true);
-            sound.AudioSource.clip = _soundConfig.Get(soundName);
-            sound.AudioSource.volume = volume;
-            sound.AudioSource.loop = loop;
+            sound.AudioSource.clip = _soundConfig.Get(protocol.SoundName);
+            sound.AudioSource.volume = protocol.Volume;
+            sound.AudioSource.loop = protocol.Loop;
 
             return sound;
         }

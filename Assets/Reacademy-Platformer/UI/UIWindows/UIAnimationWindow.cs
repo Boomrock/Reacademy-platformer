@@ -27,7 +27,7 @@ namespace UI.UIWindows
         public override void Hide()
         {
             var transformPosition = transform.position;
-            Debug.Log(transformPosition);
+
             _hideAnimation?.Kill();
             _hideAnimation = transform
                 .DOMoveY(-transformPosition.y*2, Duration)

@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using UI.UIService;
+using UnityEngine;
 
 namespace UI.UIWindows
 {
@@ -26,7 +27,7 @@ namespace UI.UIWindows
         public override void Hide()
         {
             var transformPosition = transform.position;
-            
+            Debug.Log(transformPosition);
             _hideAnimation?.Kill();
             _hideAnimation = transform
                 .DOMoveY(-transformPosition.y*2, Duration)

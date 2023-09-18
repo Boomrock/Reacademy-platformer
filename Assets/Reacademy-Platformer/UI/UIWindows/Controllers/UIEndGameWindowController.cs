@@ -10,10 +10,7 @@ namespace UI.UIWindows
         private GameController _gameController;
 
         public UIEndGameWindowController(UIEndGameWindow uiEndGameWindow, UIRoot uiRoot ) : base(uiEndGameWindow, uiRoot)
-        {
-            _window.OnShowEvent += ShowWindow;
-            _window.OnHideEvent += HideWindow;
-        }
+        { }
         [Inject]
         public void Initialization(GameController gameController)
         {

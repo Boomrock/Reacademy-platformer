@@ -5,8 +5,8 @@ namespace UI.UIService
 {
     public abstract class UIWindow : MonoBehaviour, IUIWindow
     {
-        [HideInInspector] public Action OnShowEvent;        
-        [HideInInspector] public Action OnHideEvent;  
+        public Action OnShowEvent;        
+        public Action OnHideEvent;  
         
         public IUIService UIService { get; set; }
         

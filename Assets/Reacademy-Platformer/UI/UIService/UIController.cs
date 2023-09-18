@@ -15,6 +15,7 @@ namespace UI.UIService
         {
             _uiRoot = uiRoot;
             _window = window;
+            window.transform.SetParent(uiRoot.PoolContainer, false);
         }
 
 

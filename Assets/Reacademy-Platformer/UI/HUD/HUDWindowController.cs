@@ -48,7 +48,7 @@ namespace UI.HUD
             return currentHP;
         }
 
-        public void ShowWindow()
+        /*public void ShowWindow()
         {
             var transform = _window.transform;
             transform.SetParent(_uiRoot.Container, false);
@@ -69,7 +69,7 @@ namespace UI.HUD
             transform.position = windowPosition;
             
             _window.Hide();
-        }
+        }*/
 
        
     }

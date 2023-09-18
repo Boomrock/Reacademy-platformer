@@ -42,6 +42,7 @@ public class GameController : IInitializable
         _uiService.Add<UIGameWindow>(uiGameWindowController);
         _uiService.Add<UIEndGameWindow>(uiEndGameWindowController);
         _uiService.Add<HUDWindow>(hudWindowController);
+        
     }
     private void ScoreInit()
     {
@@ -53,9 +54,10 @@ public class GameController : IInitializable
     {
         _soundController.Stop();
         _soundController.Play(SoundName.BackMain, loop: true);
-
         _playerController.Spawn();
         _spawner.StartSpawn();
+        _uiService.ShowOnly<UIGameWindow>();
+
     }
 
     public void StopGame()
@@ -66,7 +68,7 @@ public class GameController : IInitializable
 
     public void Initialize()
     {
-        _uiService.Show<UIMainMenuWindow>();
+        _uiService.ShowOnly<UIMainMenuWindow>();
         ScoreInit();
         _soundController.Play(SoundName.BackStart, loop: true);
     }

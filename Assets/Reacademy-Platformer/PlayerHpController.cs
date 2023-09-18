@@ -24,7 +24,7 @@ public class PlayerHpController
     public void ReduceHealth(float damage)
     {
         _health -= damage;
-        
+        Debug.Log("damage");
         _soundController.Play(SoundName.GetDamage);
         OnHealthChanged?.Invoke(_health);
         

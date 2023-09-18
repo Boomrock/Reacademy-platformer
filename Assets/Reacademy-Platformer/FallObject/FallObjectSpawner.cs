@@ -44,7 +44,7 @@ public class FallObjectSpawner : ITickable
 
     public void StartSpawn()
     {
-        _spawnPeriod = 6.5f;
+        _spawnPeriod = 2;
         _tickableManager.Add(this);
     }
 
@@ -61,9 +61,9 @@ public class FallObjectSpawner : ITickable
         {
             fallObjectController = new FallObjectController(fallObjectView, _objectConfig.Get((FallObjectType)type), _tickableManager);
             fallObjectController.PlayerCatchFallingObjectNotify += (FallObjectController _) => _pool.Despawn(fallObjectView);
+            fallObjectController.ObjectFellNotify += (FallObjectController _) => _pool.Despawn(fallObjectView);
             _fallObjectStorage.Add(fallObjectView, fallObjectController);
         }
-        fallObjectView.gameObject.SetActive(true);
         _spawnPosition.x = Random.Range(_minPositionX, _maxPositionX);
         fallObjectView.transform.position = _spawnPosition;
     }

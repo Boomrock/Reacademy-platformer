@@ -15,6 +15,6 @@ MonoBehaviour:
   PositionY: 6
   MinPositionX: 7
   MaxPositionX: -7
-  SpawnPeriodMin: 0.5
-  SpawnPeriodMax: 4
+  SpawnPeriodMin: 0.1
+  SpawnPeriodMax: 2
   DelayStartSpawn: 6.5

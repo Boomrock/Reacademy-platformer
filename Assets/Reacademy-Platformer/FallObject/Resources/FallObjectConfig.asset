@@ -15,11 +15,11 @@ MonoBehaviour:
   fallObjectModels:
   - Type: 0
     PointsPerObject: 1
-    Damage: 50
+    Damage: 0
     FallSpeed: 50
     ObjectSprite: {fileID: 21300000, guid: 6a05ba137ea24134885b86121d15518a, type: 3}
   - Type: 1
     PointsPerObject: 1
-    Damage: 50
+    Damage: 0
     FallSpeed: 50
     ObjectSprite: {fileID: 21300000, guid: f0c86c9071442284b8f3574e3b8475d7, type: 3}

@@ -29,6 +29,7 @@ namespace FallObject
         [SerializeField] private SpriteRenderer _spriteRenderer;
         private void Reinit(Sprite sprite)
         {   
+            Debug.Log(sprite);
             _spriteRenderer.sprite = sprite;
         }
         private void OnCollisionEnter2D(Collision2D other)
@@ -51,7 +52,7 @@ namespace FallObject
             protected override void Reinitialize(FallObjectType type, FallObjectView fallObjectView)
             {
                 fallObjectView.Reinit(_objectConfig.Get(type).ObjectSprite);
-                fallObjectView.GameObject().SetActive(false);
+                fallObjectView.GameObject().SetActive(true);
             }
         }
 

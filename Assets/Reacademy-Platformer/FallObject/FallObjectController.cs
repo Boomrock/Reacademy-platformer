@@ -27,6 +27,7 @@ namespace FallObject
         private float _fallSpeed;
         private int _damage;
         private bool _isCatched;
+        private bool _isTick = false;
 
         public FallObjectController(
             FallObjectView view,
@@ -35,6 +36,7 @@ namespace FallObject
         {
             _model = model;
             _tickableManager = tickableManager;
+            _tickableManager.AddFixed(this);
             _pointsPerObject = model.PointsPerObject;
             _fallSpeed = model.FallSpeed;
             _damage = model.Damage;
@@ -80,13 +82,15 @@ namespace FallObject
 
             _view.transform.localScale = _defaultScale;
             _isCatched = !value;
-            if (value)
+            if (value && !_isTick)
             {
                 _tickableManager.AddFixed(this);
+                _isTick = true;
             }
             else
             {
                 _tickableManager.RemoveFixed(this);   
+                _isTick = false;
             }
         }
         

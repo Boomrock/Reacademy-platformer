@@ -66,6 +66,7 @@ namespace UI.UIService
 
         public bool Add<T>(IUIController controller) where T : IUIWindow
         {
+            
             return _controllersStorage.TryAdd(typeof(T), controller);
         }  
         public IUIController GetController<T>() where T : IUIWindow
